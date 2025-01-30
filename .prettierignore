@@ -1,0 +1,9 @@
+node_modules
+dist
+*.min.js
+.npm
+
+BOTSCORD/node_modules
+BOTSCORD/.npm
+TUBERCORD/node_modules
+TUBERCORD/.npm
