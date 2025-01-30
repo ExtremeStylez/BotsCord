@@ -1,0 +1,306 @@
+:root {
+  --bgColor: #313338;
+  --cardColor: #2b2d31;
+  --textColor: #f2f3f5;
+  --secondaryTextColor: #b5bac1;
+  --accentColor: #5865f2;
+  --hoverBg: #4e5058;
+  --modalBg: #313338;
+  --inputBg: #1e1f22;
+  --buttonHover: #4752c4;
+  --dangerColor: #ed4245;
+  --borderColor: #1e1f22;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif;
+}
+body,
+html {
+  height: 100%;
+  margin: 0;
+  padding: 20px;
+  background-color: var(--bgColor);
+  color: var(--textColor);
+  min-height: 100vh;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.appCard {
+  background-color: var(--cardColor);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+  /* cursor: pointer; */
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--borderColor);
+}
+.appCard:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.23);
+}
+
+.cardHeader {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+}
+.cardAvatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  margin-right: 16px;
+  background-color: var(--accentColor);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+}
+.cardAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+}
+.cardTitleWrapper {
+  display: flex;
+}
+.cardTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  text-overflow: ellipsis;
+}
+
+.cardBody {
+  padding: 0 16px 16px;
+  flex-grow: 1;
+}
+.cardDescription {
+  font-size: 14px;
+  color: var(--secondaryTextColor);
+  margin: 0;
+}
+
+.cardFooter {
+  padding: 16px;
+  border-top: 1px solid var(--borderColor);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.errIndicator {
+  width: 16px;
+  height: 16px;
+  background-color: var(--dangerColor);
+  border-radius: 50%;
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  position: relative;
+}
+.errIndicator::after {
+  content: 'Token invalid';
+  position: absolute;
+  background-color: var(--modalBg);
+  color: var(--textColor);
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
+}
+.errIndicator:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.cardMenu {
+  background: none;
+  border: none;
+  color: var(--secondaryTextColor);
+  font-size: 20px;
+  /* cursor: pointer; */
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+}
+.cardMenu:hover {
+  background-color: var(--borderColor);
+}
+.dropdownMenu {
+  display: none;
+  position: absolute;
+  top: 65px;
+  right: 55px;
+  width: 120px;
+  background-color: var(--modalBg);
+  border-radius: 4px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.24);
+  z-index: 1;
+  overflow: hidden;
+}
+.dropdownMenu button {
+  display: block;
+  width: 100%;
+  padding: 9px 12px;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--textColor);
+  /* cursor: pointer; */
+  font-size: 14px;
+  transition: background-color 0.1s;
+}
+.dropdownMenu button:hover {
+  background-color: var(--hoverBg);
+}
+
+.dropdownMenu button:last-child {
+  border-top: 0.5px solid var(--borderColor);
+  color: var(--dangerColor);
+}
+.dropdownMenu button:last-child:hover {
+  border-top: 0.5px solid var(--borderColor);
+  color: var(--textColor);
+  background-color: var(--dangerColor);
+}
+
+.addCard {
+  border: 1px solid var(--borderColor);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--secondaryTextColor);
+  padding: 20px;
+  transition: all 0.2s ease-in-out;
+}
+.addCardIcon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+.modalContent {
+  background-color: var(--modalBg);
+  margin: 10% auto;
+  padding: 24px;
+  border-radius: 8px;
+  width: 440px;
+  max-width: 90%;
+}
+.modalContent h2 {
+  margin-top: 0;
+  color: var(--textColor);
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.modalContent input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  outline: none;
+  border: none;
+  background-color: var(--inputBg);
+  color: var(--textColor);
+  border-radius: 3px;
+  font-size: 14px;
+}
+.modalContent button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 3px;
+  /* cursor: pointer; */
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.modalContent button:first-of-type {
+  background-color: var(--accentColor);
+  color: white;
+}
+.modalContent button:first-of-type:hover {
+  background-color: var(--buttonHover);
+}
+.modalContent button:first-of-type:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.5);
+}
+
+.modalContent button:last-of-type {
+  background-color: #ed4245;
+  color: var(--secondaryTextColor);
+}
+
+.modalContent button:last-of-type:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(196, 59, 61, 0.5);
+}
+
+button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+button.loading {
+  color: transparent;
+}
+
+button.loading::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  margin-left: -10px;
+  margin-top: -13px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

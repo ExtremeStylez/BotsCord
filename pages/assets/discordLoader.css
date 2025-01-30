@@ -1,0 +1,103 @@
+:root {
+  --discord-blue: #5865f2;
+  --discord-bg: #36393f;
+  --discord-text: #dcddde;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.discordLoader {
+  font-family: 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif;
+  background-color: var(--discord-bg);
+  color: var(--discord-text);
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  width: 100%;
+  z-index: 2000;
+}
+
+.loadingContainer {
+  text-align: center;
+}
+
+.discordLogo {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+}
+
+.loadingText {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.loadingTip {
+  font-size: 14px;
+  max-width: 300px;
+  margin: 0 auto;
+  opacity: 0.7;
+}
+
+.progressBar {
+  width: 300px;
+  height: 5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 20px auto;
+}
+
+.progress {
+  width: 0%;
+  height: 100%;
+  background-color: var(--discord-blue);
+  border-radius: 5px;
+  transition: width 0.5s ease-in-out;
+}
+
+@media (max-width: 480px) {
+  .discordLogo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .loadingText {
+    font-size: 16px;
+  }
+
+  .loadingTip {
+    font-size: 12px;
+    max-width: 250px;
+  }
+
+  .progressBar {
+    width: 250px;
+  }
+}

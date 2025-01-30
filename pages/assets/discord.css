@@ -1,0 +1,278 @@
+:root {
+  --bgColor: #313338;
+  --cardColor: #2b2d31;
+  --textColor: #f2f3f5;
+  --secondaryTextColor: #b5bac1;
+  --accentColor: #5865f2;
+  --hoverBg: #4e5058;
+  --modalBg: #313338;
+  --inputBg: #1e1f22;
+  --buttonHover: #4752c4;
+  --dangerColor: #ed4245;
+  --borderColor: #1e1f22;
+  --bgGuilds: #1e1f22;
+  --bgSecondary: #2b2d31;
+  --bgTertiary: #313338;
+  --bg-message-hover: #2e3035;
+  --text-normal: #f2f3f5;
+  --text-muted: #949ba4;
+  --interactiveNormal: #b5bac1;
+  --interactive-hover: #dcddde;
+  --interactive-active: #ffffff;
+  --brand: #5865f2;
+  --channel-height: 34px;
+  --headerHeight: 48px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+}
+
+body {
+  font-family: 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif;
+  background-color: var(--bgColor);
+  color: var(--textColor);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  display: flex;
+  height: 100%;
+  flex-shrink: 0;
+}
+.guildSidebar {
+  background-color: var(--bgGuilds);
+  width: 72px;
+  height: 100%;
+  padding: 12px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+}
+.guildIcon {
+  /*position: relative;*/
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--bgSecondary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition:
+    border-radius 0.15s ease-out,
+    background-color 0.15s ease-out;
+  color: var(--interactiveNormal);
+  font-size: 18px;
+  font-weight: 600;
+}
+.guildIcon:hover,
+.guildIcon.active {
+  border-radius: 16px;
+  background-color: var(--brand);
+  color: var(--interactive-active);
+}
+.guildIcon.active::after {
+  position: absolute;
+  opacity: 0.76;
+  left: -2.4px;
+  border-radius: 6px;
+  content: '';
+  height: 42px;
+  width: 8px;
+  background: white;
+  padding: auto 2px;
+}
+.guildIcon:hover::before {
+  content: var(--sName);
+  position: absolute;
+  /*top: -50px;*/
+  left: 80px;
+  max-width: 100px;
+  /*transform: translateX(-50%);*/
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  /*z-index: 10;*/
+}
+.guildIcon:hover::before {
+  opacity: 1;
+}
+
+.guildIcon img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+.guildSeparator {
+  height: 2px;
+  width: 32px;
+  background-color: var(--bgSecondary);
+  margin: 8px 0;
+}
+
+.channelSidebar {
+  background-color: #2f3136;
+  width: 240px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.serverHeader {
+  height: 48px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #2f3136;
+  border-bottom: 1px solid rgba(4, 4, 5, 0.2);
+  box-shadow: 0 1px 0 rgba(4, 4, 5, 0.2);
+  cursor: pointer;
+}
+
+.headerContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.serverName {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.memberCount {
+  color: #b9bbbe;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.serverMenu {
+  background: none;
+  border: none;
+  color: #b9bbbe;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.serverMenu:hover {
+  color: #dcddde;
+}
+
+.channelContainer {
+  flex: 1;
+  padding: 0;
+  overflow-y: auto;
+}
+
+.channelCategory {
+  padding: 16px 0 0;
+}
+
+.categoryName {
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: #96989d;
+  cursor: pointer;
+  user-select: none;
+}
+
+.categoryName:hover {
+  color: #dcddde;
+}
+
+.categoryArrow {
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  color: #96989d;
+  transition: transform 0.2s ease;
+}
+
+.categoryName:hover .categoryArrow {
+  color: #dcddde;
+}
+
+.channelList {
+  list-style: none;
+  margin: 6px 0;
+}
+
+.channel {
+  margin: 1px 0;
+  padding: 0 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.channelContent {
+  padding: 6px 8px;
+  margin: 1px 0;
+  display: flex;
+  align-items: center;
+  color: #96989d;
+  border-radius: 4px;
+}
+
+.channel:hover .channelContent {
+  background-color: rgba(79, 84, 92, 0.4);
+  color: #dcddde;
+}
+
+.channelIcon {
+  margin-right: 6px;
+  font-size: 20px;
+  color: inherit;
+}
+
+.channelName {
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: -312px;
+    top: 0;
+    bottom: 0;
+    transition: left 0.3s ease;
+    z-index: 1000;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+}

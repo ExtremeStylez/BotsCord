@@ -1,0 +1,549 @@
+:root {
+  --bgColor: #313338;
+  --cardColor: #2b2d31;
+  --textColor: #f2f3f5;
+  --secondaryTextColor: #b5bac1;
+  --accentColor: #5865f2;
+  --hoverBg: #4e5058;
+  --modalBg: #313338;
+  --inputBg: #1e1f22;
+  --buttonHover: #4752c4;
+  --dangerColor: #ed4245;
+  --borderColor: #1e1f22;
+  --bgGuilds: #1e1f22;
+  --bgSecondary: #2b2d31;
+  --bgTertiary: #313338;
+  --bgMessageHover: #2e3035;
+  --textNormal: #f2f3f5;
+  --textMuted: #949ba4;
+  --interactiveNormal: #b5bac1;
+  --interactiveHover: #dcddde;
+  --interactiveActive: #ffffff;
+  --brand: #5865f2;
+  --channelHeight: 34px;
+  --headerHeight: 48px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif;
+  background-color: var(--bgColor);
+  color: var(--textColor);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  position: relative;
+  display: flex;
+  height: 100%;
+  flex-shrink: 0;
+  background-color: var(--bgGuilds);
+}
+.guildSidebar {
+  width: 72px;
+  height: 100%;
+  padding: 12px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.guildIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--bgSecondary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition:
+    border-radius 0.15s ease-out,
+    background-color 0.15s ease-out;
+  color: var(--interactiveNormal);
+  font-size: 18px;
+  font-weight: 600;
+}
+.guildIcon:hover,
+.guildIcon.active {
+  border-radius: 16px;
+  background-color: var(--brand);
+  color: var(--interactiveActive);
+}
+.guildIcon.active::after {
+  position: absolute;
+  opacity: 0.76;
+  left: -2.4px;
+  border-radius: 6px;
+  content: '';
+  height: 42px;
+  width: 8px;
+  background: white;
+  padding: auto 2px;
+}
+.guildIcon:hover::before {
+  content: var(--sName);
+  position: absolute;
+  left: 80px;
+  max-width: 100px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+}
+.guildIcon:hover::before {
+  opacity: 1;
+}
+.guildIcon img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+.guildSeparator {
+  height: 2px;
+  width: 32px;
+  background-color: var(--bgSecondary);
+  margin: 8px 0;
+}
+
+.channelSidebar {
+  background-color: #2f3136;
+  width: 240px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  /*border-top-left-radius: 30px;*/
+}
+.channelHeader {
+  position: fixed;
+  /*border-bottom: 2px solid var(--bgGuilds);*/
+  box-shadow: 0 1px 1.4px rgba(0, 0, 0, 0.23);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 23px 28px;
+  width: 240px;
+}
+.serverName {
+  font-weight: bold;
+  line-height: 20px;
+  font-size: 17px;
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.memberCount {
+  color: var(--textMuted);
+}
+.channelFooter {
+  position: fixed;
+  bottom: 0;
+  background: var(--bgSecondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  padding: 23px 28px;
+  width: 240px;
+  overflow: hidden;
+}
+
+.appProfile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+}
+.appProfileText {
+  display: flex;
+  font-family: 'gg sans';
+  flex-direction: column;
+}
+.appName {
+  font-weight: bold;
+}
+.appUsername {
+  font-weight: thin;
+  font-size: 9px;
+}
+.appAvatar {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  background-color: var(--bgSecondary);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 9px;
+  padding: 0;
+}
+.appAvatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+  display: block;
+}
+.appAvatar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: gray;
+  border: 2px solid var(--bgSecondary);
+}
+.appAvatar.online::after {
+  background-color: green;
+}
+.appAvatar.busy::after {
+  background-color: red;
+}
+.appAvatar.offline::after {
+  background-color: gray;
+}
+
+.channelContainer {
+  flex: 1;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  top: 48px;
+  bottom: 52px;
+  height: calc(100% - 48px - 52px);
+  padding: 0px 3px;
+  width: 240px;
+  overflow-y: auto;
+}
+
+.channelCategory {
+  padding: 16px 0 0;
+}
+.categoryName {
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: #96989d;
+  user-select: none;
+}
+.categoryName:hover {
+  color: #dcddde;
+}
+.categoryArrow {
+  width: 12px;
+  height: 12px;
+  margin-right: 2px;
+  margin-left: -12px;
+  color: #96989d;
+  transition: transform 0.2s ease;
+}
+.categoryName:hover .categoryArrow {
+  color: #dcddde;
+}
+.channelList {
+  list-style: none;
+  margin: 3px 0;
+}
+.channel {
+  margin: 0px 0;
+  padding: 0 8px;
+  border-radius: 4px;
+}
+.channelContent {
+  padding: 4.5px 8px;
+  margin: 1px 0;
+  display: flex;
+  align-items: center;
+  color: #96989d;
+  border-radius: 4px;
+}
+.channel:hover .channelContent {
+  background-color: rgba(79, 84, 92, 0.4);
+  color: #dcddde;
+}
+.channelIcon {
+  margin-right: 5px;
+  font-size: 20px;
+  color: inherit;
+}
+.channelName {
+  font-size: 15.5px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.dmSidebar.disabled {
+  display: none;
+}
+.channelSidebar.disabled {
+  display: none;
+}
+
+.dmSidebar {
+  background-color: #2f3136;
+  width: 240px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  /*border-top-left-radius: 30px;*/
+}
+.dmHeader {
+  position: fixed;
+  /*border-bottom: 2px solid var(--bgGuilds);*/
+  box-shadow: 0 1px 1.4px rgba(0, 0, 0, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 6px 23px;
+  width: 240px;
+  font-weight: bold;
+  line-height: 20px;
+  font-size: 17px;
+}
+.dmFooter {
+  position: fixed;
+  bottom: 0;
+  background: var(--bgSecondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  padding: 23px 28px;
+  width: 240px;
+  overflow: hidden;
+}
+
+.dmContainer {
+  flex: 1;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  top: 48px;
+  bottom: 52px;
+  height: calc(100% - 48px - 52px);
+  padding: 0px 3px;
+  width: 240px;
+  overflow-y: auto;
+}
+
+.dmText {
+  padding: 16px 0 0;
+}
+.dmContent {
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: #96989d;
+  user-select: none;
+}
+.dmText:hover {
+  color: #dcddde;
+}
+
+.dmList {
+  margin: 3px 0;
+}
+.dmProfile {
+  padding: 4.5px 8px;
+  margin: 1px 0;
+  display: flex;
+  align-items: center;
+  color: #96989d;
+  font-size: 14px;
+  border-radius: 4px;
+}
+.dmProfile:hover {
+  background: var(--bgSecondary);
+}
+.dmProfile:hover > .dmProfileText {
+  color: #dcddde;
+}
+.dmProfileText {
+  display: flex;
+  font-family: 'gg sans';
+  flex-direction: column;
+}
+.dmName {
+  font-weight: bold;
+}
+.dmStatus {
+  font-weight: thin;
+  font-size: 9px;
+}
+.dmAvatar {
+  width: 38px;
+  height: 38px;
+  background: black;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 9px;
+  padding: 0;
+  overflow: hidden;
+}
+.dmAvatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+  display: block;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  flex-shrink: 1;
+}
+.contentHeader {
+  position: fixed;
+  /*border-bottom: 2px solid var(--bgGuilds);*/
+  box-shadow: 0 1px 1.3px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  padding: 8px 23px;
+  width: 100%;
+  font-weight: bold;
+  line-height: 20px;
+  font-size: 17px;
+  gap: 3px;
+}
+.contentFooter {
+  position: fixed;
+  bottom: 0;
+  background: red;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 65px;
+  padding: 23px 28px;
+  width: 100%;
+  overflow: hidden;
+}
+.channelContentText span {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--textNormal);
+}
+.channelMenuIcon {
+  position: relative;
+  background: white;
+  height: 3.5px;
+  width: 20px;
+  border-radius: 10px;
+}
+.channelMenuIcon::after {
+  content: '';
+  position: absolute;
+  background: white;
+  height: 3.5px;
+  width: 20px;
+  border-radius: 10px;
+  top: -5.5px;
+}
+.channelMenuIcon::before {
+  content: '';
+  position: absolute;
+  background: white;
+  height: 3.5px;
+  width: 20px;
+  border-radius: 10px;
+  bottom: -5.5px;
+}
+.channelContentText {
+  width: 90%;
+  margin-left: 20px;
+}
+
+.contentContainer {
+  flex: 1;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  top: 60px;
+  bottom: 65px;
+  height: calc(100% - 60px - 65px);
+  padding: 0px 3px;
+  width: 100%;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: -170%;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    transition: left 0.3s ease;
+    z-index: 1000;
+  }
+  .channelSidebar {
+    width: calc(100% - 72px);
+  }
+  .channelHeader {
+    width: calc(100% - 72px);
+  }
+  .channelFooter {
+    width: calc(100% - 72px);
+  }
+  .channelContainer {
+    width: calc(100% - 72px);
+  }
+  .dmSidebar {
+    width: calc(100% - 72px);
+  }
+  .dmHeader {
+    width: calc(100% - 72px);
+  }
+  .dmFooter {
+    width: calc(100% - 72px);
+  }
+  .dmContainer {
+    width: calc(100% - 72px);
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+}
