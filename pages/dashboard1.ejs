@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Developer Applications-style Cards</title>
+    <style>
+        :root {
+            --bg-color: #313338;
+            --card-bg: #2b2d31;
+            --text-color: #f2f3f5;
+            --secondary-text-color: #b5bac1;
+            --accent-color: #5865f2;
+            --hover-bg: #4e5058;
+            --modal-bg: #313338;
+            --input-bg: #1e1f22;
+            --button-hover: #4752c4;
+            --danger-color: #ed4245;
+            --border-color: #1e1f22;
+        }
+
+        body {
+            font-family: 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.24);
+        }
+
+        .card-header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            margin-right: 16px;
+            background-color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .card-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 16px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 0 16px 16px;
+            flex-grow: 1;
+        }
+
+        .card-description {
+            font-size: 14px;
+            color: var(--secondary-text-color);
+            margin: 0;
+        }
+
+        .card-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .card-menu {
+            background: none;
+            border: none;
+            color: var(--secondary-text-color);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        .add-card {
+            border: 2px dashed var(--secondary-text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: var(--secondary-text-color);
+            padding: 20px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .add-card:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .add-card-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            background-color: var(--modal-bg);
+            margin: 10% auto;
+            padding: 24px;
+            border-radius: 8px;
+            width: 440px;
+            max-width: 90%;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            color: var(--text-color);
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            border: none;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        .modal-content button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .modal-content button:first-of-type {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .modal-content button:first-of-type:hover {
+            background-color: var(--button-hover);
+        }
+
+        .modal-content button:last-child {
+            background-color: transparent;
+            color: var(--secondary-text-color);
+        }
+
+        .modal-content button:last-child:hover {
+            text-decoration: underline;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 16px;
+            background-color: var(--modal-bg);
+            border-radius: 4px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.24);
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .dropdown-menu button {
+            display: block;
+            width: 100%;
+            padding: 10px 12px;
+            text-align: left;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.1s;
+        }
+
+        .dropdown-menu button:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .dropdown-menu button:last-child {
+            color: var(--danger-color);
+        }
+    </style>
+    <script>
+        const userApps = JSON.parse("<%= JSON.stringify(userApps) %>");
+    </script>
+</head>
+<body>
+    <div class="container" id="cardContainer">
+        <!-- Cards will be dynamically added here -->
+    </div>
+
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <h2>Create an application</h2>
+            <input type="text" id="nameInput" placeholder="Name">
+            <input type="text" id="descriptionInput" placeholder="Description (optional)">
+            <button id="submitProfile">Create</button>
+            <button id="cancelAdd">Cancel</button>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h2>Edit application</h2>
+            <input type="text" id="editNameInput" placeholder="Name">
+            <input type="text" id="editDescriptionInput" placeholder="Description (optional)">
+            <button id="submitEdit">Save Changes</button>
+            <button id="cancelEdit">Cancel</button>
+        </div>
+    </div>
+
+    <script src='//cdn.jsdelivr.net/npm/eruda'></script>
+    <script>eruda.init();</script>
+    <script>
+        const cardContainer = document.getElementById('cardContainer');
+        const addModal = document.getElementById('addModal');
+        const editModal = document.getElementById('editModal');
+        const nameInput = document.getElementById('nameInput');
+        const descriptionInput = document.getElementById('descriptionInput');
+        const editNameInput = document.getElementById('editNameInput');
+        const editDescriptionInput = document.getElementById('editDescriptionInput');
+        const submitProfile = document.getElementById('submitProfile');
+        const submitEdit = document.getElementById('submitEdit');
+        const cancelAdd = document.getElementById('cancelAdd');
+        const cancelEdit = document.getElementById('cancelEdit');
+
+        console.log(userApps);
+        let applications = [
+            { id: 1, name: 'My Cool Bot', description: 'A really awesome Discord bot', image: '' },
+            { id: 2, name: 'Game Integration', description: 'Connects your favorite game to Discord', image: '' },
+            { id: 3, name: 'Music Player', description: 'Play music in your Discord server', image: '' },
+        ];
+
+        let editingApplicationId = null;
+
+        function createCard(app) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            let avatarContent;
+            if (app.image) {
+                avatarContent = `<img src="${app.image}" alt="${app.name}'s avatar">`;
+            } else {
+                const firstLetter = app.name.charAt(0).toUpperCase();
+                avatarContent = firstLetter;
+            }
+            
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="card-avatar">${avatarContent}</div>
+                    <h3 class="card-title">${app.name}</h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">${app.description || 'No description'}</p>
+                </div>
+                <div class="card-footer">
+                    <button class="card-menu" aria-label="Application options">⋯</button>
+                </div>
+                <div class="dropdown-menu">
+                    <button class="edit-application">Edit</button>
+                    <button class="delete-application">Delete</button>
+                </div>
+            `;
+
+            const menuButton = card.querySelector('.card-menu');
+            const dropdownMenu = card.querySelector('.dropdown-menu');
+            const editButton = card.querySelector('.edit-application');
+            const deleteButton = card.querySelector('.delete-application');
+
+            menuButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+            });
+
+            editButton.addEventListener('click', () => {
+                editingApplicationId = app.id;
+                editNameInput.value = app.name;
+                editDescriptionInput.value = app.description || '';
+                editModal.style.display = 'block';
+            });
+
+            deleteButton.addEventListener('click', () => {
+                applications = applications.filter(a => a.id !== app.id);
+                renderCards();
+            });
+
+            return card;
+        }
+
+        function createAddCard() {
+            const addCard = document.createElement('div');
+            addCard.className = 'card add-card';
+            addCard.innerHTML = `
+                <div class="add-card-icon">+</div>
+                <div>Create an application</div>
+            `;
+            addCard.addEventListener('click', () => addModal.style.display = 'block');
+            return addCard;
+        }
+
+        function renderCards() {
+            cardContainer.innerHTML = '';
+            applications.forEach(app => {
+                cardContainer.appendChild(createCard(app));
+            });
+            cardContainer.appendChild(createAddCard());
+        }
+
+        submitProfile.addEventListener('click', () => {
+            const name = nameInput.value.trim();
+            const description = descriptionInput.value.trim();
+            if (name) {
+                const newApplication = {
+                    id: applications.length + 1,
+                    name: name,
+                    description: description,
+                    image: ''
+                };
+                applications.push(newApplication);
+                renderCards();
+                addModal.style.display = 'none';
+                nameInput.value = '';
+                descriptionInput.value = '';
+            }
+        });
+
+        submitEdit.addEventListener('click', () => {
+            const name = editNameInput.value.trim();
+            const description = editDescriptionInput.value.trim();
+            if (name) {
+                const appIndex = applications.findIndex(a => a.id === editingApplicationId);
+                if (appIndex !== -1) {
+                    applications[appIndex].name = name;
+                    applications[appIndex].description = description;
+                    renderCards();
+                    editModal.style.display = 'none';
+                }
+            }
+        });
+
+        cancelAdd.addEventListener('click', () => {
+            addModal.style.display = 'none';
+            nameInput.value = '';
+            descriptionInput.value = '';
+        });
+
+        cancelEdit.addEventListener('click', () => {
+            editModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === addModal) {
+                addModal.style.display = 'none';
+            }
+            if (event.target === editModal) {
+                editModal.style.display = 'none';
+            }
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                menu.style.display = 'none';
+            });
+        });
+
+        renderCards();
+    </script>
+</body>
+</html>

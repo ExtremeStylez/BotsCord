@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <meta charset='UTF-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <title>BotsCord | Dashboard</title>
+        <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+	    <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'/>
+	    <link type='text/css' rel='stylesheet' href='/dashboard.css'>
+        <link rel='stylesheet' href='/toast.css'>
+        <script>
+            const userApps = JSON.parse("<%= JSON.stringify(userApps) %>");
+        </script>
+    </head>
+    <body>
+        <div class='container' id='cardContainer'>
+            <% userApps.map(app => { %>
+            <div class='appCard' onclick='switchAccount("<%= app.token %>")' data-id='<%= app.id %>'>
+                <div class='cardHeader'>
+                    <div class='cardAvatar'>
+                    <% if (!app.avatar) { %>
+                        <%= app.username.charAt(0).toUpperCase(); %>
+                    <% } else { %>
+                        <img alt='<%= app.username %>' src='https://cdn.discordapp.com/avatars/<%= app.id %>/<%= app.avatar %>.png' />
+                    <% } %>
+                    </div>
+                    <div class='cardTitleWrapper'>
+
+                    <% if (app.invalid) { %>
+                        <div class='errIndicator'>!</div>
+                    <% } %>
+                        <h3 class='cardTitle'>
+                        <%= (app.username).length > 17 ? (app.username).substring(0,16) + '..' : app.username %>
+                        </h3>
+                    </div>
+                </div>
+                <div class='cardBody'>
+                    <p class='cardDescription'><%= app.description %></p>
+                </div>
+                <div class='cardFooter'>
+                    <button class='cardMenu' aria-label='Application options'>⋯</button>
+                </div>
+                <div class='dropdownMenu'>
+                    <button class='refreshApplication'>Refresh</button>
+                    <button class='editApplication'>Edit</button>
+                    <button class='removeApplication'>Remove</button>
+                </div>
+            </div>
+            <% }) %>
+            <div class='appCard addCard'>
+                <div class='addCardIcon'>+</div>
+                <div>Add new application</div>
+            </div>
+        </div>
+        
+        <div class='modal' id='addModal'>
+            <div class='modalContent'>
+                <h2>Add new application</h2>
+                <input type='text' id='tokenInput' placeholder='Token' />
+                <button id='submitApp'>Add</button>
+                <button id='cancelAdd'>Cancel</button>
+            </div>
+        </div>
+        <div class='modal' id='editModal'>
+            <div class='modalContent'>
+                <h2> Edit application</h2>
+                <input type='text' id='tokenInput' placeholder='Token' />
+                <button id='editApp'>Edit</button>
+                <button id='cancelEdit'>Cancel</button>
+            </div>
+        </div>
+        
+        <div id='toastContainer'></div>
+        <script src='//cdn.jsdelivr.net/npm/eruda'></script>
+        <script>eruda.init()</script>
+        <script src='/dashboardFunctions.js'></script>
+        <script src='/useToast.js'></script>
+    </body>
+</html>

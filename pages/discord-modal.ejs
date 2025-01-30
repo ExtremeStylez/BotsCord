@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord-style Chat Interface</title>
+    <style>
+        :root {
+            --bg-primary: #1e1f22;
+            --bg-secondary: #2b2d31;
+            --bg-tertiary: #313338;
+            --bg-message-hover: #2e3035;
+            --text-normal: #f2f3f5;
+            --text-muted: #949ba4;
+            --interactive-normal: #b5bac1;
+            --interactive-hover: #dcddde;
+            --interactive-active: #ffffff;
+            --brand: #5865f2;
+            --channel-height: 34px;
+            --header-height: 48px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-tertiary);
+            color: var(--text-normal);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            display: flex;
+            height: 100%;
+            flex-shrink: 0;
+        }
+
+        .guilds {
+            background-color: var(--bg-primary);
+            width: 72px;
+            height: 100%;
+            padding: 12px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .guild-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: var(--bg-secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: border-radius 0.15s ease-out, background-color 0.15s ease-out;
+            color: var(--interactive-normal);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .guild-icon:hover, .guild-icon.active {
+            border-radius: 16px;
+            background-color: var(--brand);
+            color: var(--interactive-active);
+        }
+
+        .guild-icon img {
+            width: 100%;
+            height: 100%;
+            border-radius: inherit;
+            object-fit: cover;
+        }
+
+        .guild-separator {
+            height: 2px;
+            width: 32px;
+            background-color: var(--bg-secondary);
+            margin: 8px 0;
+        }
+
+        .channels {
+            background-color: var(--bg-secondary);
+            width: 240px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .server-header {
+            height: var(--header-height);
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+
+        .server-name {
+            font-weight: 600;
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .channels-container {
+            padding: 8px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .channel-category {
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .channel-item {
+            height: var(--channel-height);
+            padding: 0 8px;
+            margin: 1px 0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .channel-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-normal);
+        }
+
+        .channel-item.active {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: var(--text-normal);
+        }
+
+        .channel-icon {
+            margin-right: 6px;
+            font-size: 20px;
+        }
+
+        .chat-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            height: var(--header-height);
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 16px;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .message:hover {
+            background-color: var(--bg-message-hover);
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 16px;
+        }
+
+        .message-content {
+            flex-grow: 1;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 4px;
+        }
+
+        .message-username {
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .message-timestamp {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .message-text {
+            line-height: 1.4;
+        }
+
+        .chat-input {
+            padding: 16px;
+        }
+
+        .chat-input input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            background-color: var(--bg-secondary);
+            color: var(--text-normal);
+        }
+
+        .mobile-nav {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -312px;
+                top: 0;
+                bottom: 0;
+                transition: left 0.3s ease;
+                z-index: 1000;
+            }
+
+            body.nav-open .sidebar {
+                left: 0;
+            }
+
+            .mobile-nav {
+                display: flex;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: var(--header-height);
+                background-color: var(--bg-secondary);
+                padding: 0 16px;
+                align-items: center;
+                z-index: 999;
+            }
+
+            .nav-toggle {
+                background: none;
+                border: none;
+                color: var(--text-normal);
+                font-size: 24px;
+                cursor: pointer;
+                padding: 8px;
+            }
+
+            .chat-container {
+                margin-top: var(--header-height);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-nav">
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        <div class="server-name">Current Server</div>
+    </div>
+
+    <div class="sidebar">
+        <div class="guilds" id="guildSidebar">
+            <!-- Guilds will be dynamically added here -->
+        </div>
+        <div class="channels">
+            <div class="server-header">
+                <div class="server-name">Server Name</div>
+            </div>
+            <div class="channels-container" id="channelsContainer">
+                <!-- Channels will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2 id="currentChannel">#general</h2>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <!-- Messages will be dynamically added here -->
+        </div>
+        <div class="chat-input">
+            <input type="text" placeholder="Message #general" id="messageInput">
+        </div>
+    </div>
+
+    <script>
+        const guildSidebar = document.getElementById('guildSidebar');
+        const channelsContainer = document.getElementById('channelsContainer');
+        const chatMessages = document.getElementById('chatMessages');
+        const currentChannelElement = document.getElementById('currentChannel');
+        const messageInput = document.getElementById('messageInput');
+
+        const guilds = [
+            { id: 1, name: 'Discord', image: 'https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png' },
+            { id: 2, name: 'Gaming', image: '' },
+            { id: 3, name: 'Coding', image: '/placeholder.svg?height=48&width=48' },
+            { id: 4, name: 'Art', image: '' },
+            { id: 5, name: 'Music', image: '/placeholder.svg?height=48&width=48' },
+        ];
+
+        const channels = {
+            1: [
+                { id: 1, name: 'general', type: 'text' },
+                { id: 2, name: 'welcome', type: 'text' },
+                { id: 3, name: 'voice', type: 'voice' },
+            ],
+            2: [
+                { id: 4, name: 'general', type: 'text' },
+                { id: 5, name: 'lfg', type: 'text' },
+                { id: 6, name: 'voice', type: 'voice' },
+            ],
+            3: [
+                { id: 7, name: 'general', type: 'text' },
+                { id: 8, name: 'help', type: 'text' },
+                { id: 9, name: 'projects', type: 'text' },
+            ],
+            4: [
+                { id: 10, name: 'general', type: 'text' },
+                { id: 11, name: 'showcase', type: 'text' },
+            ],
+            5: [
+                { id: 12, name: 'general', type: 'text' },
+                { id: 13, name: 'recommendations', type: 'text' },
+                { id: 14, name: 'voice', type: 'voice' },
+            ],
+        };
+
+        const messages = [
+            { id: 1, channelId: 1, userId: 1, username: 'JohnDoe', avatar: '/placeholder.svg?height=40&width=40', content: 'Hello everyone!', timestamp: '2023-05-20T10:00:00Z' },
+            { id: 2, channelId: 1, userId: 2, username: 'JaneSmith', avatar: '/placeholder.svg?height=40&width=40', content: 'Hi John! How are you?', timestamp: '2023-05-20T10:05:00Z' },
+            { id: 3, channelId: 1, userId: 1, username: 'JohnDoe', avatar: '/placeholder.svg?height=40&width=40', content: 'I\'m doing great, thanks for asking!', timestamp: '2023-05-20T10:10:00Z' },
+        ];
+
+        function createGuildIcon(guild) {
+            const guildIcon = document.createElement('div');
+            guildIcon.className = 'guild-icon';
+            
+            if (guild.image) {
+                const img = document.createElement('img');
+                img.src = guild.image;
+                img.alt = `${guild.name} guild icon`;
+                guildIcon.appendChild(img);
+            } else {
+                guildIcon.textContent = guild.name.charAt(0).toUpperCase();
+            }
+
+            guildIcon.addEventListener('click', () => {
+                document.querySelectorAll('.guild-icon').forEach(icon => icon.classList.remove('active'));
+                guildIcon.classList.add('active');
+                document.querySelector('.server-name').textContent = guild.name;
+                renderChannels(guild.id);
+            });
+
+            return guildIcon;
+        }
+
+        function renderGuilds() {
+            guildSidebar.innerHTML = '';
+            guilds.forEach((guild, index) => {
+                const guildIcon = createGuildIcon(guild);
+                if (index === 0) guildIcon.classList.add('active');
+                guildSidebar.appendChild(guildIcon);
+                if (index === 0) {
+                    const separator = document.createElement('div');
+                    separator.className = 'guild-separator';
+                    guildSidebar.appendChild(separator);
+                }
+            });
+
+            const addGuild = document.createElement('div');
+            addGuild.className = 'guild-icon';
+            addGuild.textContent = '+';
+            addGuild.setAttribute('aria-label', 'Add a Guild');
+            addGuild.addEventListener('click', () => {
+                alert('Add a new guild');
+            });
+            guildSidebar.appendChild(addGuild);
+        }
+
+        function renderChannels(guildId) {
+            channelsContainer.innerHTML = '';
+            const guildChannels = channels[guildId];
+
+            const textChannels = guildChannels.filter(channel => channel.type === 'text');
+            const voiceChannels = guildChannels.filter(channel => channel.type === 'voice');
+
+            if (textChannels.length > 0) {
+                const textCategory = document.createElement('div');
+                textCategory.className = 'channel-category';
+                textCategory.innerHTML = '<span>Text Channels</span><span>+</span>';
+                channelsContainer.appendChild(textCategory);
+
+                textChannels.forEach(channel => {
+                    const channelItem = document.createElement('div');
+                    channelItem.className = 'channel-item';
+                    channelItem.innerHTML = `<span class="channel-icon">#</span><span>${channel.name}</span>`;
+                    
+                    channelItem.addEventListener('click', () => {
+                        document.querySelectorAll('.channel-item').forEach(item => item.classList.remove('active'));
+                        channelItem.classList.add('active');
+                        currentChannelElement.textContent = `#${channel.name}`;
+                        messageInput.placeholder = `Message #${channel.name}`;
+                        renderMessages(channel.id);
+                    });
+                    channelsContainer.appendChild(channelItem);
+                });
+            }
+
+            if (voiceChannels.length > 0) {
+                const voiceCategory = document.createElement('div');
+                voiceCategory.className = 'channel-category';
+                voiceCategory.innerHTML = '<span>Voice Channels</span>';
+                channelsContainer.appendChild(voiceCategory);
+
+                voiceChannels.forEach(channel => {
+                    const channelItem = document.createElement('div');
+                    channelItem.className = 'channel-item';
+                    channelItem.innerHTML = `<span class="channel-icon">🔊</span><span>${channel.name}</span>`;
+                    channelItem.addEventListener('click', () => {
+                        alert(`Joined voice channel: ${channel.name}`);
+                    });
+                    channelsContainer.appendChild(channelItem);
+                });
+            }
+        }
+
+        function renderMessages(channelId) {
+            chatMessages.innerHTML = '';
+            const channelMessages = messages.filter(message => message.channelId === channelId);
+
+            channelMessages.forEach(message => {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message';
+                messageElement.innerHTML = `
+                    <img src="${message.avatar}" alt="${message.username}'s avatar" class="message-avatar">
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-username">${message.username}</span>
+                            <span class="message-timestamp">${formatTimestamp(message.timestamp)}</span>
+                        </div>
+                        <div class="message-text">${message.content}</div>
+                    </div>
+                `;
+                chatMessages.appendChild(messageElement);
+            });
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+        }
+
+        // Mobile navigation
+        const navToggle = document.querySelector('.nav-toggle');
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        navToggle.addEventListener('click', () => {
+            document.body.classList.toggle('nav-open');
+        });
+
+        // Swipe to open/close navigation
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeDistance = touchEndX - touchStartX;
+            const threshold = 50; // minimum distance for swipe
+
+            if (Math.abs(swipeDistance) > threshold) {
+                if (swipeDistance > 0) {
+                    // Swipe right
+                    document.body.classList.add('nav-open');
+                } else {
+                    // Swipe left
+                    document.body.classList.remove('nav-open');
+                }
+            }
+        }
+
+        // Close navigation when clicking outside
+        document.addEventListener('click', (e) => {
+            if (document.body.classList.contains('nav-open') &&
+                !e.target.closest('.sidebar') &&
+                !e.target.closest('.nav-toggle')) {
+                document.body.classList.remove('nav-open');
+            }
+        });
+
+        // Initialize the interface
+        renderGuilds();
+        renderChannels(1);
+        renderMessages(1);
+
+        // Handle message input
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && messageInput.value.trim() !== '') {
+                const newMessage = {
+                    id: messages.length + 1,
+                    channelId: 1, // Assuming we're in the first channel
+                    userId: 1, // Assuming the current user is John Doe
+                    username: 'JohnDoe',
+                    avatar: '/placeholder.svg?height=40&width=40',
+                    content: messageInput.value.trim(),
+                    timestamp: new Date().toISOString()
+                };
+                messages.push(newMessage);
+                renderMessages(1);
+                messageInput.value = '';
+            }
+        });
+    </script>
+</body>
+</html>

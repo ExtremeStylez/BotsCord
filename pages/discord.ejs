@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <meta charset='UTF-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <title>BotsCord | @me</title>
+        <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+        <script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
+	    <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'/>
+	    <link type='text/css' rel='stylesheet' href='/discordContent.css'>
+        <link type='text/css' rel='stylesheet' href='/discordLoader.css'>
+        <link rel='stylesheet' href='/toast.css'>
+        <script src='/dashboardInit.js'></script>
+    </head>
+    <body>
+        <!-- Loading Screen -->
+        <div class='discordLoader' id='discordLoader'>
+            <div class='loadingContainer'>
+                <svg class='discordLogo' aria-hidden='true' viewBox='0 0 24 24'>
+                    <path fill='currentColor' d='M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z'/>
+                </svg>
+                <p class='loadingText'>Loading BotsCord</p>
+                <div class='progressBar'>
+                    <div class='progress' id='progress'></div>
+                </div>
+                <p class='loadingTip' id='loadingTip'>Did you know? You can use Discord to chat while gaming!</p>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class='sidebar open' data-obj='<%= JSON.stringify(assignedApp) %>'>
+            <div class='guildSidebar'>
+                <div id='dms' class='guildIcon active' onclick='switchDMs()'>
+                    <img src='https://cdn.discordapp.com/embed/avatars/0.png' />
+                </div>
+                <div class='guildSeparator'></div>
+                <div class='guildIcon addGuild' style='--sName: "Create/Add";'>
+                    +
+                </div>
+            </div>
+            <div class='channelSidebar disabled'>
+                <div class='channelHeader'>
+                    <div class='headerContent'>
+                       <h3 class='serverName'>NONE</h3>
+                    </div>
+                    <div class='serverMenu'>⋯</div>
+                </div>
+                <div class='channelContainer'>
+                    
+                </div>
+                <div class='channelFooter'>
+                    <div class='appProfile'>
+                        <div class='appAvatar online'>
+                            <img src='https://cdn.discordapp.com/embed/avatars/0.png' />
+                        </div>
+                        <div class='appProfileText'>
+                            <span class='appName'>NAME</span>
+                            <span class='appUsername'>USERNAME</span>
+                        </div>
+                    </div>
+                    <div class='controlIcons'>
+                        <div class='appMenu'>⋯</div>
+                    </div>
+                </div>
+            </div>
+            <div class='dmSidebar'>
+                <div class='dmHeader'>
+                    Search
+                </div>
+                <div class='dmContainer'>
+                    <div class='dmContent'>
+                        <div class='dmText'>DIRECT MESSAGES</div>
+                    </div>
+                    <div class='dmList'>
+                        <div class='dmProfile'>
+                            <div class='dmAvatar'>
+                                <img src='https://cdn.discordapp.com/embed/avatars/0.png' />
+                            </div>
+                            <div class='dmProfileText'>
+                                <span class='dmName'>NAME</span>
+                                <span class='dmStatus'>N/A</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>                <div class='dmFooter'>
+                    <div class='appProfile'>
+                        <div class='appAvatar online'>
+                            <img src='https://cdn.discordapp.com/embed/avatars/0.png' />
+                        </div>
+                        <div class='appProfileText'>
+                            <span class='appName'>NAME</span>
+                            <span class='appUsername'>USERNAME</span>
+                        </div>
+                    </div>
+                    <div class='controlIcons'>
+                        <div class='appMenu'>⋯</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class='content'>
+            <div class='contentHeader'>
+                <div class='channelMenuIcon' id='showChannelSidebar'></div>
+                <div class='channelContentText'>
+                    <span class='channelIcon'>#</span>
+                    <span class='channelName'>general</span>
+                </div>
+            </div>
+            <div class='contentContainer'></div>
+            <div class='contentFooter'></div>
+        </div>
+        
+        <!-- Extras -->
+        <div id='toastContainer'></div>
+        <script src='//cdn.jsdelivr.net/npm/eruda'></script>
+        <script>
+            eruda.init()
+        </script>
+        <script src='/dashboardEvents.js' crossorigin='anonymous'></script>
+        <script src='/useToast.js'></script>
+    </body>
+</html>
