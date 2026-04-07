@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { Providers } from "@/components/providers";
+import { Providers } from "@/components/providers/providers";
+import { SocketProvider } from "@/components/providers/app";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -27,9 +28,11 @@ export default function RootLayout({
       className={cn(jetBrainsMono.variable, "font-sans", geist.variable, "dark")}
     >
       <body className="antialiased">
-        <Providers>
-          {children}
-        </Providers>
+        <SocketProvider>
+          <Providers>
+            {children}
+          </Providers>
+        </SocketProvider>
       </body>
     </html>
   );

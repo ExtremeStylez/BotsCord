@@ -3,7 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Shield, Bot, Zap, Check, MessageSquare } from "lucide-react"
-import { authClient } from "@/lib/auth-client"
+import { authClient } from "@/lib/server"
 import { useMutation } from "@tanstack/react-query"
 
 export default function AuthCard() {

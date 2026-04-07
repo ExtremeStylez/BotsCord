@@ -2,7 +2,7 @@
 
 import AddAppDialog from "@/components/add-app-dialog";
 import DashboardHeader from "@/components/dashboard-header";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/server";
 import { useQuery } from "@tanstack/react-query";
 import { Bot } from "lucide-react";
 import React, { useState } from "react";

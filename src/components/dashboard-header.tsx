@@ -3,12 +3,12 @@
 import Link from "next/link"
 import { Button } from "./ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
-import { Bell, LogOut, Settings } from "lucide-react"
+import { LogOut, Settings } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu"
 import { useMutation } from "@tanstack/react-query"
-import { authClient } from "@/lib/auth-client"
+import { authClient } from "@/lib/server"
 
-export default function DashboardHeader({ data }) {
+export default function DashboardHeader({ data }: { data: { user_id: string; email: string; username: string; avatar?: string | null; global_name?: string | null } }) {
     const { mutate: logOut } = useMutation({
         mutationFn: async () => {
             const res = await authClient.auth.user.logout.get()
